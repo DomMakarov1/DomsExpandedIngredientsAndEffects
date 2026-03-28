@@ -100,7 +100,7 @@ namespace DomsExpandedIngredientsAndEffects
             ClassInjector.RegisterTypeInIl2Cpp<LipstickMapEffect>();
         #endif
         }
-        
+
         private void OnInject()
         {
             try
@@ -274,9 +274,9 @@ namespace DomsExpandedIngredientsAndEffects
                     continue;
                 }
 
-                AddIngredientToShop(shop, MoonDustIngredient.Definition,  50f,  true);
-                AddIngredientToShop(shop, LipstickIngredient.Definition,  30f,  true);
-                AddIngredientToShop(shop, AirhornIngredient.Definition,   25f,  true);
+                AddIngredientToShop(shop, MoonDustIngredient.Definition,  6f,  true);
+                AddIngredientToShop(shop, LipstickIngredient.Definition,  5f,  true);
+                AddIngredientToShop(shop, AirhornIngredient.Definition,   5f,  true);
             }
 
             yield return null;
