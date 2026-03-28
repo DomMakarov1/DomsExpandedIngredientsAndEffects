@@ -1,0 +1,24 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{4E923682-A2D9-47CE-A6AF-4D8268681F1B}") = "DomsExpandedIngredientsAndEffects", "DomsExpandedIngredientsAndEffects.csproj", "{8CA8A2AF-631D-4916-B707-D382218D4130}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		IL2CPP|Any CPU = IL2CPP|Any CPU
+		Mono|Any CPU = Mono|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8CA8A2AF-631D-4916-B707-D382218D4130}.IL2CPP|Any CPU.ActiveCfg = IL2CPP|Any CPU
+		{8CA8A2AF-631D-4916-B707-D382218D4130}.IL2CPP|Any CPU.Build.0 = IL2CPP|Any CPU
+		{8CA8A2AF-631D-4916-B707-D382218D4130}.Mono|Any CPU.ActiveCfg = Mono|Any CPU
+		{8CA8A2AF-631D-4916-B707-D382218D4130}.Mono|Any CPU.Build.0 = Mono|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04DAB5EF-84BE-4417-8C9F-642E8B345C67}
+	EndGlobalSection
+EndGlobal

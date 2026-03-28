@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="build/paths.props"/>
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
+
+        <RootNamespace>DomsExpandedIngredientsAndEffects</RootNamespace>
+        <Version>1.0.0</Version>
+        <Author>me</Author>
+        <Description>Custom drugs and effects using S1API</Description>
+
+        <Configurations>Mono;IL2CPP</Configurations>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Mono'">
+        <DefineConstants>$(DefineConstants);MONO</DefineConstants>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)' == 'IL2CPP'">
+        <DefineConstants>$(DefineConstants)</DefineConstants>
+    </PropertyGroup>
+    
+    <Import Project="build/conditions.props"/>
+
+    <ItemGroup Label="Publicizer" Condition="'$(IsMono)' == 'true'">
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <Publicize Include="Assembly-CSharp"/>
+    </ItemGroup>
+
+    <!-- Unity Dependencies -->
+    <ItemGroup>
+        <Reference Include="UnityEngine.Il2CppAssetBundleManager">
+            <HintPath>libs\UnityEngine.Il2CppAssetBundleManager.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    <!-- MelonLoader References -->
+    <Import Project="build\references\MelonMono.targets"/>
+    <Import Project="build\references\MelonIL2CPP.targets"/>
+
+    <!-- Events -->
+    <Import Project="build\events\preBuild.targets"/>
+    <Import Project="build\events\postBuild.targets"/>
+</Project>

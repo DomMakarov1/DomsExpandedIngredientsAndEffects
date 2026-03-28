@@ -1,0 +1,8 @@
+﻿<Project>
+    <PropertyGroup>
+        <!-- Paths and conditions -->
+        <S1MonoDir>E:\SteamLibrary\steamapps\common\Schedule I</S1MonoDir>
+        <S1CPPDir>E:\SteamLibrary\steamapps\common\Schedule I</S1CPPDir>
+        <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    </PropertyGroup>
+</Project>
