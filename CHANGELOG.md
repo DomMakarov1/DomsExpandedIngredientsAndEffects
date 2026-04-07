@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.2.0
+### New Ingredients
+- Added Fertilizer — available at both Gas-Mart shops from Hoodlum I
+- Added Hot Sauce — available at both Gas-Mart shops from Peddler III
+
+### Fertilizer Effects
+- Added Earthy base effect
+- Added Root Bound effect (Earthy + Calming)
+- Added Overgrown effect (Root Bound + Toxic) — green screen overlay, NPCs move sluggishly
+- Added Bloom effect (Overgrown + Energizing) — flower petal particles, golden screen tint
+- Added Compost effect (Bloom + Foggy) — blackout flash on apply, NPCs stumble in confusion
+
+### Hot Sauce Effects
+- Added Spicy base effect
+- Added Five Alarm effect (Spicy + Toxic)
+- Added Capsaicin Rush effect (Five Alarm + Energizing) — smoke breath on player and NPCs
+- Added Dragon Breath effect (Capsaicin Rush + Sneaky) — fire breath on player and NPCs
+- Added Inferno effect (Dragon Breath + Sedating) — full body fire with smoke and point light glow
+
+### New Lipstick Effects
+- Added Femme Fatale effect (Voluptuous + Foggy) — pink/gold sparkle particles, soft pink screen tint
+- Added Venom Kiss effect (Diva + Toxic) — deep purple-green screen tint
+
+### New Airhorn Effects
+- Added Thunderclap effect (Airhorn + Toxic) — blue-white screen flash on apply, persistent electric-blue tint
+- Added White Noise effect (Fiesta + Sedating) — grey desaturation overlay, NPCs move sluggishly
+
+### New Magic Juice Effects
+- Added Phantasm effect (Magic + Toxic) — blinding white screen flash; no stat change, purely experiential
+
+### Cross-Ingredient Effects
+- Added Wildflower effect (Earthy + Voluptuous / Fertilizer + Lipstick) — flower petals, green-gold screen tint
+- Added Burning Passion effect (Voluptuous + Spicy / Lipstick + Hot Sauce) — pink fire particles, pink screen tint
+- Added Upheaval effect (Earthy + Airhorn / Fertilizer + Airhorn) — dust flash on apply, earthy screen tint
+
+### Bug Fixes
+- Fixed base-game effect combinations (e.g. thought-provoking + horse semen → electrifying) being bypassed by the custom mixing patch
+- Fixed all custom effect combinations so mixing order no longer matters — both directions produce the same result
+
 ## 1.1.0
 ### New Features
 - Added Moon Dust, Lipstick, and Airhorn to both Gas-Mart shops (Central and West)

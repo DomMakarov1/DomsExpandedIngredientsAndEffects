@@ -98,6 +98,30 @@ namespace DomsExpandedIngredientsAndEffects
             ClassInjector.RegisterTypeInIl2Cpp<SuperSuperChargeEffect>();
             ClassInjector.RegisterTypeInIl2Cpp<ProfitBoostEffect>();
             ClassInjector.RegisterTypeInIl2Cpp<LipstickMapEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<EarthyEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<FertilizerMapEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<RootBoundEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<OvergrownEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<BloomEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<CompostEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<SpicyEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<HotSauceMapEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<FiveAlarmEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<CapsaicinRushEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<DragonBreathEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<InfernoEffect>();
+            // Lipstick chain
+            ClassInjector.RegisterTypeInIl2Cpp<FemmeFataleEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<VenomKissEffect>();
+            // Airhorn chain
+            ClassInjector.RegisterTypeInIl2Cpp<ThunderclapEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<WhiteNoiseEffect>();
+            // Cross-ingredient
+            ClassInjector.RegisterTypeInIl2Cpp<WildflowerEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<BurningPassionEffect>();
+            ClassInjector.RegisterTypeInIl2Cpp<UpheavalEffect>();
+            // Magic juice special
+            ClassInjector.RegisterTypeInIl2Cpp<PhantasmEffect>();
         #endif
         }
 
@@ -105,8 +129,6 @@ namespace DomsExpandedIngredientsAndEffects
         {
             try
             {
-                MelonLogger.Msg("Mod: Starting content injection...");
-
                 var registry       = Singleton<Registry>.Instance;
                 var productManager = NetworkSingleton<ProductManager>.Instance;
 
@@ -116,10 +138,12 @@ namespace DomsExpandedIngredientsAndEffects
                     return;
                 }
 
-                var moonDust   = new MoonDustIngredient();  moonDust.Register(registry, productManager);
-                var lipstick   = new LipstickIngredient();  lipstick.Register(registry, productManager);
-                var airhorn    = new AirhornIngredient();   airhorn.Register(registry, productManager);
+                var moonDust   = new MoonDustIngredient();   moonDust.Register(registry, productManager);
+                var lipstick   = new LipstickIngredient();   lipstick.Register(registry, productManager);
+                var airhorn    = new AirhornIngredient();    airhorn.Register(registry, productManager);
                 var magicJuice = new MagicJuiceIngredient(); magicJuice.Register(registry, productManager);
+                var fertilizer = new FertilizerIngredient(); fertilizer.Register(registry, productManager);
+                var hotSauce   = new HotSauceIngredient();   hotSauce.Register(registry, productManager);
 
                 foreach (var combo in new EffectCombination[]
                 {
@@ -147,6 +171,34 @@ namespace DomsExpandedIngredientsAndEffects
                     new EffectCombination("magicbase",        "energizing",     new SuperChargeEffectDef()),
                     new EffectCombination("supermagic",       "slippery",       new ProfitBoostEffectDef()),
                     new EffectCombination("supercharge",      "supermagic",     new SuperSuperChargeEffectDef()),
+
+                    // ── Fertilizer chain ──────────────────────────────────
+                    new EffectCombination("earthyeffect",  "calming",      new RootBoundEffectDef()),
+                    new EffectCombination("rootbound",     "toxic",        new OvergrownEffectDef()),
+                    new EffectCombination("overgrown",     "energizing",   new BloomEffectDef()),
+                    new EffectCombination("bloom",         "foggy",        new CompostEffectDef()),
+
+                    // ── Hot Sauce chain ───────────────────────────────────
+                    new EffectCombination("spicyeffect",   "toxic",        new FiveAlarmEffectDef()),
+                    new EffectCombination("fivealarm",     "energizing",   new CapsaicinRushEffectDef()),
+                    new EffectCombination("capsaicinrush", "sneaky",       new DragonBreathEffectDef()),
+                    new EffectCombination("dragonbreath",  "sedating",     new InfernoEffectDef()),
+
+                    // ── Lipstick chain ────────────────────────────────────
+                    new EffectCombination("voluptuouseffect", "foggy",     new FemmeFataleEffectDef()),
+                    new EffectCombination("divaeffect",       "toxic",     new VenomKissEffectDef()),
+
+                    // ── Airhorn chain ─────────────────────────────────────
+                    new EffectCombination("airhornbase",   "toxic",        new ThunderclapEffectDef()),
+                    new EffectCombination("fiestaeffect",  "sedating",     new WhiteNoiseEffectDef()),
+
+                    // ── Cross-ingredient ──────────────────────────────────
+                    new EffectCombination("earthyeffect",  "voluptuouseffect", new WildflowerEffectDef()),
+                    new EffectCombination("voluptuouseffect", "spicyeffect",     new BurningPassionEffectDef()),
+                    new EffectCombination("earthyeffect",  "airhornbase",      new UpheavalEffectDef()),
+
+                    // ── Magic Juice special ───────────────────────────────
+                    new EffectCombination("magicbase",     "toxic",        new PhantasmEffectDef()),
                 })
                 {
                     CustomMixRegistry.Register(combo);
@@ -162,7 +214,7 @@ namespace DomsExpandedIngredientsAndEffects
                 MelonLoader.MelonCoroutines.Start(SpawnMagicJuiceVendor());
 
                 _injected = true;
-                MelonLogger.Msg("Mod: Injection complete.");
+                MelonLogger.Msg("Loaded successfully!");
             }
             catch (Exception ex)
             {
@@ -259,21 +311,26 @@ namespace DomsExpandedIngredientsAndEffects
 
             var shops = ShopInterface.AllShops;
 
-            SetRankRequirement(MoonDustIngredient.Definition, ERank.Hustler,  5);
-            SetRankRequirement(LipstickIngredient.Definition, ERank.Bagman,   3);
-            SetRankRequirement(AirhornIngredient.Definition,  ERank.Enforcer, 1);
+            SetRankRequirement(FertilizerIngredient.Definition, ERank.Hoodlum,  1);
+            SetRankRequirement(HotSauceIngredient.Definition,  ERank.Peddler,  3);
+            SetRankRequirement(MoonDustIngredient.Definition,  ERank.Hustler,  5);
+            SetRankRequirement(LipstickIngredient.Definition,  ERank.Bagman,   3);
+            SetRankRequirement(AirhornIngredient.Definition,   ERank.Enforcer, 1);
 
             var gasCodes = new[] { "gas_mart_central", "gas_mart_west" };
 
             foreach (var code in gasCodes)
             {
-                var shop = shops.Find(s => s.ShopCode == code);
+                ShopInterface shop = null;
+                foreach (var s in shops) { if (s.ShopCode == code) { shop = s; break; } }
                 if (shop == null)
                 {
                     MelonLogger.Warning($"[Shop] Could not find shop: {code}");
                     continue;
                 }
 
+                AddIngredientToShop(shop, FertilizerIngredient.Definition, 3f,  true);
+                AddIngredientToShop(shop, HotSauceIngredient.Definition,  5f,  true);
                 AddIngredientToShop(shop, MoonDustIngredient.Definition,  6f,  true);
                 AddIngredientToShop(shop, LipstickIngredient.Definition,  5f,  true);
                 AddIngredientToShop(shop, AirhornIngredient.Definition,   5f,  true);
@@ -323,7 +380,7 @@ namespace DomsExpandedIngredientsAndEffects
 
                     var entry = UnityEngine.Object.Instantiate(prefab, container);
                     entry.Initialize(listing);
-                    entry.onQuantityChanged.AddListener(delegate { });
+                    entry.onQuantityChanged.AddListener(new UnityEngine.Events.UnityAction(() => { }));
                     entries.Add(entry);
                 }
 
@@ -353,7 +410,7 @@ namespace DomsExpandedIngredientsAndEffects
         private static void AddIngredientToShop(ShopInterface shop, PropertyItemDefinition def, float price, bool canBeDelivered = false)
         {
             if (def == null || shop == null) return;
-            if (shop.Listings.Find(l => l.Item?.ID == def.ID) != null) return;
+            foreach (var l in shop.Listings) { if (l.Item?.ID == def.ID) return; }
 
             var listing = new ShopListing
             {
@@ -387,7 +444,8 @@ namespace DomsExpandedIngredientsAndEffects
         {
             yield return new WaitForSeconds(3f);
 
-            var sourceShop = ShopInterface.AllShops.Find(s => s.ShopCode == "gas_mart_central");
+            ShopInterface sourceShop = null;
+            foreach (var s in ShopInterface.AllShops) { if (s.ShopCode == "gas_mart_central") { sourceShop = s; break; } }
             if (sourceShop == null)
             {
                 MelonLogger.Warning("[Vendor] Could not find source shop to clone.");
@@ -520,7 +578,7 @@ namespace DomsExpandedIngredientsAndEffects
             intObj.SetMessage("Browse The Alchemist Table");
             intObj.MaxInteractionRange = 3f;
             intObj.SetInteractableState(InteractableObject.EInteractableState.Default);
-            intObj.onInteractStart.AddListener(() =>
+            intObj.onInteractStart.AddListener(new UnityEngine.Events.UnityAction(() =>
             {
                 var lm = NetworkSingleton<LevelManager>.Instance;
                 if (lm == null) return;
@@ -533,7 +591,7 @@ namespace DomsExpandedIngredientsAndEffects
                 }
 
                 OpenAlchemistShop();
-            });
+            }));
 
             MelonLoader.MelonCoroutines.Start(AddVendorMapPOI(vendorGO));
         }
@@ -598,7 +656,7 @@ namespace DomsExpandedIngredientsAndEffects
             float duration = 0.9f;
             while (elapsed < duration)
             {
-                Singleton<ScheduleOne.UI.HUD>.Instance?.CrosshairText?.Show(
+                Singleton<HUD>.Instance?.CrosshairText?.Show(
                     "Get outta here kid.", new Color32(255, 80, 80, 255));
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -614,7 +672,7 @@ namespace DomsExpandedIngredientsAndEffects
             var lm = NetworkSingleton<LevelManager>.Instance;
             if (lm == null) yield break;
 
-            var existingPOI = UnityEngine.Object.FindObjectOfType<ScheduleOne.Map.POI>();
+            var existingPOI = UnityEngine.Object.FindObjectOfType<POI>();
             if (existingPOI == null)
             {
                 MelonLogger.Warning("[Vendor] Could not find POI to clone.");
@@ -623,7 +681,7 @@ namespace DomsExpandedIngredientsAndEffects
 
             var poiGO = UnityEngine.Object.Instantiate(existingPOI.gameObject, vendorGO.transform);
             poiGO.transform.localPosition = new Vector3(0f, 2f, 0f);
-            var poi = poiGO.GetComponent<ScheduleOne.Map.POI>();
+            var poi = poiGO.GetComponent<POI>();
             poi.SetMainText("The Alchemist Table");
 
             poi.onUICreated.AddListener(() =>
@@ -642,7 +700,7 @@ namespace DomsExpandedIngredientsAndEffects
                 SendAlchemistPhoneMessage();
             }
 
-            lm.onRankChanged += (before, after) =>
+            lm.onRankChanged += new Action<FullRank, FullRank>((before, after) =>
             {
                 bool show = after >= new FullRank(ERank.Enforcer, 4);
                 poi.enabled = show;
@@ -654,10 +712,10 @@ namespace DomsExpandedIngredientsAndEffects
                     CreateAlchemistConversation();
                     SendAlchemistPhoneMessage();
                 }
-            };
+            });
         }
 
-        private static System.Collections.IEnumerator SetPOIIcon(ScheduleOne.Map.POI poi)
+        private static System.Collections.IEnumerator SetPOIIcon(POI poi)
         {
             yield return null;
 
@@ -731,7 +789,8 @@ namespace DomsExpandedIngredientsAndEffects
         {
             try
             {
-                var sourceNPC = NPCManager.NPCRegistry.Find(n => n != null);
+                NPC sourceNPC = null;
+                foreach (var n in NPCManager.NPCRegistry) { if (n != null) { sourceNPC = n; break; } }
                 if (sourceNPC == null)
                 {
                     MelonLogger.Warning("[Alchemist] No NPC found to clone.");

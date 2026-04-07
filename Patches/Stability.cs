@@ -150,6 +150,15 @@ public class StabilityFix
         return true;
     }
 
+    [HarmonyPatch(typeof(MixingStationCanvas), "MixingDone")]
+    [HarmonyFinalizer]
+    public static Exception MixingDoneFinalizer(Exception __exception)
+    {
+        if (__exception != null)
+            MelonLoader.MelonLogger.Error($"[STABILITY] MixingDone crash: {__exception.Message}\n{__exception.StackTrace}");
+        return null;
+    }
+
     private static System.Collections.IEnumerator ReleaseLock()
     {
         yield return new WaitForSeconds(1.5f);
@@ -521,6 +530,7 @@ public class StabilityFix
                 bool comboFired = false;
                 foreach (var combo in CustomMixRegistry.Combinations)
                 {
+                    // Forward: product already has ExistingEffectID, mixing in IngredientEffectID
                     Effect existingMatch = EffectListFind(r, e => e?.ID == combo.ExistingEffectID);
                     if (existingMatch != null && __1.ID == combo.IngredientEffectID)
                     {
@@ -529,6 +539,19 @@ public class StabilityFix
                         EffectListRemoveAll(r, e => e?.ID == combo.IngredientEffectID && e != combo.BuiltOutputEffect);
                         comboFired = true;
                         break;
+                    }
+                    // Reverse: product already has IngredientEffectID, mixing in ExistingEffectID
+                    if (combo.ExistingEffectID != combo.IngredientEffectID)
+                    {
+                        Effect reverseMatch = EffectListFind(r, e => e?.ID == combo.IngredientEffectID);
+                        if (reverseMatch != null && __1.ID == combo.ExistingEffectID)
+                        {
+                            int index = r.IndexOf(reverseMatch);
+                            r[index] = combo.BuiltOutputEffect;
+                            EffectListRemoveAll(r, e => e?.ID == combo.ExistingEffectID && e != combo.BuiltOutputEffect);
+                            comboFired = true;
+                            break;
+                        }
                     }
                 }
 
@@ -605,17 +628,39 @@ public class StabilityFix
                     }
                 }
 
-                if (!EffectListAny(r, e => e != null && e.ID == __1.ID))
-                    r.Add(__1);
-
-                RunChainCheck(r);
-                WriteBack(r, ref __result);
-                return false;
+                // No custom combo fired — let the original game method handle
+                // effect addition and its own native combination logic
+                return true;
             }
             catch (Exception ex)
             {
                 MelonLoader.MelonLogger.Error($"[STABILITY] DoubleMixUpgrade error: {ex.Message}");
                 return true;
+            }
+        }
+
+        // After the original method runs (or after our Prefix sets the result),
+        // apply RunChainCheck so any custom combos triggered by the final state are resolved
+        [HarmonyPostfix]
+        public static void Postfix(
+#if MONO
+            List<Effect> __0, Effect __1, EDrugType __2, ref List<Effect> __result)
+#else
+            Il2CppSystem.Collections.Generic.List<Effect> __0,
+            Effect __1, EDrugType __2, ref Il2CppSystem.Collections.Generic.List<Effect> __result)
+#endif
+        {
+            try
+            {
+                if (__result == null) return;
+                var r = new List<Effect>();
+                foreach (var e in __result) if (e != null) r.Add(e);
+                RunChainCheck(r);
+                WriteBack(r, ref __result);
+            }
+            catch (Exception ex)
+            {
+                MelonLoader.MelonLogger.Error($"[STABILITY] MixProperties Postfix error: {ex.Message}");
             }
         }
 
